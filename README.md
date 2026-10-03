@@ -1,4 +1,4 @@
-<h1 align="center">Anurag Kumar</h1>
+<h1 align="center">Hi, I'm Anurag Kumar</h1>
 
 <p align="center">
   <a href="https://anuragkumar-dev.vercel.app/"><img src="https://readme-typing-svg.demolab.com?font=Saira&weight=600&size=22&duration=3000&pause=900&color=34D399&center=true&vCenter=true&width=560&lines=Full+Stack+Developer;Building+on+both+sides+of+the+API;Next.js+%C2%B7+Node.js+%C2%B7+FastAPI+%C2%B7+PostgreSQL" alt="Full Stack Developer" /></a>
