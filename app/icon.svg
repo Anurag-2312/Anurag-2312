@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- AK monogram; colours follow the tokens in app/globals.css. -->
+  <rect width="32" height="32" fill="#121212"/>
+  <rect x="1" y="1" width="30" height="30" fill="none" stroke="#10B981" stroke-width="2"/>
+  <path fill="#34D399" d="M5 21.68L8.6 10.32L12.52 10.32L16.13 21.68L13.23 21.68L12.55 19.45L8.5 19.45L7.84 21.68ZM9.11 17.29L11.92 17.29L10.57 12.8L10.45 12.8ZM17.02 21.68L17.02 10.32L19.9 10.32L19.9 14.81L20.74 14.81L23.85 10.32L26.95 10.32L23.07 15.72L27 21.68L23.78 21.68L20.74 16.99L19.9 16.99L19.9 21.68Z"/>
+</svg>

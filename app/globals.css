@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* Design tokens. Hand copies: themeColor in app/layout.js and the fills in app/icon.svg. */
+:root {
+  /* Surfaces */
+  --background: #121212;
+  --card: #1E1E1E;
+
+  /* Text: at least 4.5:1 on both surfaces */
+  --text-strong: #F2F2F2; /* headings */
+  --text-body: #A3A3A3; /* paragraphs */
+  --text-muted: #8A8A8A; /* numerals, captions, meta */
+  --accent-text: #34D399; /* small accent text, links, hovered titles */
+
+  /* Accent */
+  --accent-fill: #047857; /* buttons with white labels */
+  --accent-fill-hover: #065F46; /* darkens on hover; lightening fails contrast */
+  --accent-large: #10B981; /* text 24px and larger, icons, non-text UI (3:1) */
+  --focus-ring: #6EE7B7; /* 2px outline, never box-shadow */
+
+  /* Decoration only, never text */
+  --tint: #064E3B; /* dark accent fills */
+  --tint-line: #065F46; /* accent-tinted borders */
+  --watermark: #1E1E1E; /* barely lighter than the page */
+
+  /* Sticky header height; scroll-padding-top reads it too. */
+  --header-height: 4rem;
+
+  /* Watermark font size. */
+  --wm-size: min(18vw, 14rem);
+}
+
+/* From lg up the links sit inline and the bar is taller. */
+@media (min-width: 64rem) {
+  :root {
+    --header-height: 4.5rem;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-text-strong: var(--text-strong);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+  --color-accent-text: var(--accent-text);
+  --color-accent-fill: var(--accent-fill);
+  --color-accent-fill-hover: var(--accent-fill-hover);
+  --color-accent-large: var(--accent-large);
+  --color-focus-ring: var(--focus-ring);
+  --color-tint: var(--tint);
+  --color-tint-line: var(--tint-line);
+
+  /* Saira, loaded in app/layout.js */
+  --font-sans: var(--font-saira);
+}
+
+/* A mouse or trackpad on a screen at least 48rem wide. */
+@custom-variant popup (@media (hover: hover) and (pointer: fine) and (min-width: 48rem));
+
+/* Use as focus-visible:focus-ring, or has-focus-visible:focus-ring on a wrapper. */
+@utility focus-ring {
+  @apply outline-2 outline-offset-2 outline-focus-ring;
+}
+
+/* Anchors land below the sticky header; smooth scroll unless reduced motion. */
+html {
+  scroll-padding-top: var(--header-height);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* html body outranks the inline body style of Next's built-in 404. */
+html body {
+  background: var(--background);
+  color: var(--text-body);
+}
+
+@layer components {
+  /* The section heading's watermark word; the empty alt text hides it from screen readers. */
+  .section-heading::before {
+    content: attr(data-wm);
+    content: attr(data-wm) / "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: -1;
+    /* Flex centring keeps an overflowing word centred; text-align would not. */
+    display: flex;
+    justify-content: center;
+    color: var(--watermark);
+    font-size: var(--wm-size);
+    font-weight: 700;
+    line-height: 0.75;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .section-heading[data-align="start"]::before {
+    justify-content: flex-start;
+  }
+
+  /* Forced colours would repaint it as full-contrast text. */
+  @media (forced-colors: active) {
+    .section-heading::before {
+      content: none;
+    }
+  }
+
+  /* Bar-separated list; the bars have empty alt text. */
+  .bar-list > li:not(:last-child)::after {
+    content: "|";
+    content: "|" / "";
+    margin-inline: 0.5em;
+    color: var(--text-muted);
+  }
+
+  /* Decorative 01, 02, 03 on the about cards. */
+  .card-numbers {
+    counter-reset: card;
+  }
+
+  .card-numbers > li {
+    counter-increment: card;
+  }
+
+  .card-numbers > li::before {
+    content: counter(card, decimal-leading-zero);
+    content: counter(card, decimal-leading-zero) / "";
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--tint-line);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* Desktop-only hover preview; opacity-hidden so it loads before the first hover. */
+  .project-row {
+    /* 15rem at 48rem wide, up to 25rem. */
+    --preview-width: clamp(15rem, 50% - 9rem, 25rem);
+    /* Clears the arrow, plus a 1.25rem gap. */
+    --preview-right: 5.75rem;
+    /* Room for the 8deg tilt, plus a 1.25rem gap. */
+    --row-reserve: calc(var(--preview-right) + var(--preview-width) * 1.04 + 1.25rem);
+  }
+
+  .project-preview {
+    display: none;
+    border: 1px solid var(--tint-line);
+
+    @variant popup {
+      display: block;
+      position: absolute;
+      z-index: 10;
+      top: 1.5rem;
+      right: var(--preview-right);
+      width: var(--preview-width);
+      height: auto;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 1.5rem 3rem -0.75rem rgb(0 0 0 / 0.8);
+      transform: translateY(0.75rem) rotate(-8deg);
+      transition:
+        opacity 250ms ease-out,
+        transform 250ms ease-out;
+
+      .project-row:is(:hover, :has(:focus-visible)) & {
+        opacity: 1;
+        transform: translateY(0) rotate(-8deg);
+        transition-delay: 60ms;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transform: translateY(0) rotate(-8deg);
+      }
+    }
+  }
+}
